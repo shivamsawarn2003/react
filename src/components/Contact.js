@@ -1,11 +1,11 @@
-import React, { useRef } from "react";
+import React, { useRef ,useState} from "react";
 import emailjs from "@emailjs/browser";
 import styled from "styled-components";
 import contactImg from "../assets/img/contact-img.svg";
 
 export const Contact = () => {
   const form = useRef();
-
+const [messageSent,setMessageSent]=useState(false);
   const sendEmail = (e) => {
     e.preventDefault();
 
@@ -20,11 +20,14 @@ export const Contact = () => {
         (result) => {
           console.log(result.text);
           console.log("message sent");
+          setMessageSent(true);
         },
         (error) => {
           console.log(error.text);
+setMessageSent(false);
         }
       );
+      form.current.reset();
   };
 
   return (
@@ -34,13 +37,15 @@ export const Contact = () => {
         <h3>Contact Me</h3>
         <form ref={form} onSubmit={sendEmail}>
           <label>Name</label>
-          <input type="text" name="user_name" />
+          <input type="text" name="user_name" required/>
           <label>Email</label>
-          <input type="email" name="user_email" />
+          <input type="email" name="user_email" required/>
           <label>Message</label>
-          <StyledTextarea name="message" />
+          <StyledTextarea name="message" required/>
           <StyledSubmit type="submit" value="Send" />
+          
         </form>
+        {messageSent && <SuccessMessage>Message sent successfully!</SuccessMessage>} {/* Success message */}
       </StyledContactForm>
       <StyledContactImage src={contactImg} alt="Contact Us" />
     </StyledContactContainer>
@@ -122,4 +127,9 @@ const StyledSubmit = styled.input`
 const StyledContactImage = styled.img`
   width: 48%;
   border-radius: 10px;
+`;
+const SuccessMessage=styled.p`
+margin-top:1rem;
+color:green;
+font-weight:bold;
 `;
